@@ -15,11 +15,13 @@ public sealed class PhonebookContext : DbContext
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlite($"Data Source={dbPath}");
+        => optionsBuilder.UseSqlite($"Data Source={dbPath}")
+        .UseSeeding((ctx, _) => SeedData.Initialize(ctx));
 
     public static void InitializeDatabase()
     {
         using var context = new PhonebookContext();
-        SeedData.Initialize(context);
+        Console.WriteLine($"Database path: {context.dbPath}");
+        context.Database.Migrate();
     }
 }
