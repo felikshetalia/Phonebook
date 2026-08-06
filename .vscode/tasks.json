@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/Phonebook/Phonebook.sln",
+                "${workspaceFolder}/Phonebook-EF/Phonebook-EF.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -23,7 +23,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/Phonebook/Phonebook.sln",
+                "${workspaceFolder}/Phonebook-EF/Phonebook-EF.sln",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -37,7 +37,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/Phonebook/Phonebook.sln",
+                "${workspaceFolder}/Phonebook-EF/Phonebook-EF.sln",
             ],
             "problemMatcher": "$msCompile"
         }

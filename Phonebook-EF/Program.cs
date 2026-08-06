@@ -4,6 +4,8 @@ class Program
 {
     static void Main(string[] args)
     {
+        PhonebookContext.InitializeDatabase();
+
         IAppView appView = new AppView();
         IContactsView contactsView = new ContactsView();
 

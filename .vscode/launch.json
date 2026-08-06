@@ -13,9 +13,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Phonebook/bin/Debug/net9.0/Phonebook.dll",
+            "program": "${workspaceFolder}/Phonebook-EF/bin/Debug/net9.0/Phonebook-EF.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Phonebook",
+            "cwd": "${workspaceFolder}/Phonebook-EF",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen",
