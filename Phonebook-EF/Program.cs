@@ -1,17 +1,23 @@
-﻿namespace Phonebook_EF;
+﻿using System.Threading.Tasks;
+
+namespace Phonebook_EF;
 
 class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         PhonebookContext.InitializeDatabase();
 
         IAppView appView = new AppView();
         IContactsView contactsView = new ContactsView();
 
-        ContactsController contactsController = new(contactsView);
+        IContactRepository contactRepository = new ContactRepository();
+
+        ContactsService contactsService = new(contactRepository);
+
+        ContactsController contactsController = new(contactsView, contactsService);
         AppController app = new(appView, contactsController);
 
-        app.Run();
+        await app.Run();
     }
 }

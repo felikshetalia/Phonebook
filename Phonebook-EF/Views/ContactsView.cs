@@ -27,4 +27,26 @@ public sealed class ContactsView : IContactsView
         AnsiConsole.MarkupLine("\n[grey]Press any key to continue.[/]");
         AnsiConsole.Console.Input.ReadKey(true);
     }
+
+    public void DisplayContactsList(IReadOnlyCollection<Contact> contacts)
+    {
+        AnsiConsole.Clear();
+
+        var table = new Table()
+            .AddColumn("Id")
+            .AddColumn("First name")
+            .AddColumn("Last name")
+            .AddColumn("Email")
+            .AddColumn("Phone Number");
+
+        foreach (var contact in contacts)
+            table.AddRow(
+                contact.Id.ToString(),
+                contact.FirstName,
+                contact.LastName,
+                contact.Email,
+                contact.PhoneNumber);
+
+        AnsiConsole.Write(table);
+    }
 }

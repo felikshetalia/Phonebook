@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace Phonebook_EF;
 
 public sealed class AppController
@@ -11,7 +13,7 @@ public sealed class AppController
         _contactsController = contactsController;
     }
 
-    public void Run()
+    public async Task Run()
     {
         bool isRunning = true;
 
@@ -22,7 +24,7 @@ public sealed class AppController
             switch (selectedOption)
             {
                 case MainMenuOption.RunContacts:
-                    _contactsController.Run();
+                    await _contactsController.Run();
                     break;
                 case MainMenuOption.Exit:
                     isRunning = false;

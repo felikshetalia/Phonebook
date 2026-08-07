@@ -1,14 +1,18 @@
+using System.Threading.Tasks;
+
 namespace Phonebook_EF;
 
 public sealed class ContactsController
 {
     private readonly IContactsView _contactsView;
+    private readonly ContactsService _service;
 
-    public ContactsController(IContactsView contactsView)
+    public ContactsController(IContactsView contactsView, ContactsService service)
     {
         _contactsView = contactsView;
+        _service = service;
     }
-    public void Run()
+    public async Task Run()
     {
         bool isRunning = true;
 
@@ -24,7 +28,7 @@ public sealed class ContactsController
                     break;
 
                 case ContactsMenuOption.ShowAllContacts:
-                    _contactsView.DisplayMessage("This field is for showing all contacts");
+                    await DisplayContacts();
                     _contactsView.WaitForInput();
                     break;
 
@@ -55,5 +59,18 @@ public sealed class ContactsController
             }
         }
         _contactsView.DisplayGoodbye();
+    }
+
+    public async Task AddContact()
+    {
+
+    }
+
+    public async Task DisplayContacts()
+    {
+        IReadOnlyCollection<Contact> contactsList =
+            await _service.GetAllContacts();
+
+        _contactsView.DisplayContactsList(contactsList);
     }
 }

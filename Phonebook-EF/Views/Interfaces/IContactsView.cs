@@ -6,4 +6,5 @@ public interface IContactsView
     void DisplayMessage(string message);
     void DisplayGoodbye();
     void WaitForInput();
+    void DisplayContactsList(IReadOnlyCollection<Contact> contacts);
 }
