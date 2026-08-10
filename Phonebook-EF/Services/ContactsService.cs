@@ -14,9 +14,22 @@ public sealed class ContactsService
         await _contactRepo.Add(contact!);
     }
 
-    public async Task UpdateContact()
+    public async Task UpdateContact(string currentId, ContactInfo newDetails)
     {
+        if (!Validators.IsContactIdValid(currentId, out int idAsInt))
+            throw new Exception("The entered Id is invalid");
 
+        if (!TryMapContactInfoToDBModel(newDetails, out Contact? contact))
+            return;
+
+        try
+        {
+            await _contactRepo.Update(idAsInt, contact!);
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
     }
 
     public async Task DeleteContact(string contactId)
@@ -37,9 +50,19 @@ public sealed class ContactsService
     public async Task<IReadOnlyCollection<Contact>> GetAllContacts()
         => await _contactRepo.GetAll();
 
-    public async Task<Contact> GetContactDetails()
+    public async Task<Contact> GetContactDetails(string contactId)
     {
-        throw new NotImplementedException();
+        if (!Validators.IsContactIdValid(contactId, out int idAsInt))
+            throw new Exception("The entered Id is invalid");
+
+        try
+        {
+            return await _contactRepo.GetOne(idAsInt);
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
     }
 
     private static bool TryMapContactInfoToDBModel(ContactInfo info, out Contact? contact)

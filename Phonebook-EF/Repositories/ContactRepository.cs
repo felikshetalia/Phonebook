@@ -16,7 +16,7 @@ public sealed class ContactRepository : IContactRepository
     {
         using (var db = new PhonebookContext())
         {
-            var contact = db.Contacts.FirstOrDefault(c => c.Id == contactId);
+            var contact = await db.Contacts.FirstOrDefaultAsync(c => c.Id == contactId);
 
             if (contact != null)
             {
@@ -31,22 +31,37 @@ public sealed class ContactRepository : IContactRepository
     {
         using (var db = new PhonebookContext())
         {
-            Console.WriteLine($"REPO DB: {db.dbPath}");
             var contacts = await db.Contacts.ToListAsync();
-
-            Console.WriteLine($"REPO FOUND: {contacts.Count} contacts");
-
             return contacts;
         }
     }
 
-    public Task<Contact> GetOne(Contact contact)
+    public async Task<Contact> GetOne(int contactId)
     {
-        throw new NotImplementedException();
+        using (var db = new PhonebookContext())
+        {
+            var contact = await db.Contacts.FirstOrDefaultAsync(c => c.Id == contactId);
+
+            if (contact != null)
+            {
+                return contact;
+            }
+            else throw new Exception("Item with a given id couldn't be found");
+        }
     }
 
-    public Task Update(int currentId, Contact newDetails)
+    public async Task Update(int currentId, Contact newDetails)
     {
-        throw new NotImplementedException();
+        using (var db = new PhonebookContext())
+        {
+            var contact = await db.Contacts.FirstOrDefaultAsync(c => c.Id == currentId);
+
+            if (contact != null)
+            {
+                db.Contacts.Update(newDetails);
+                await db.SaveChangesAsync();
+            }
+            else throw new Exception("Item with a given id couldn't be found");
+        }
     }
 }

@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace Phonebook_EF;
 
 public sealed class ContactsController
@@ -33,12 +31,12 @@ public sealed class ContactsController
                     break;
 
                 case ContactsMenuOption.ShowContactDetails:
-                    _contactsView.DisplayMessage("This field is for showing contact details");
+                    await DisplayContactDetails();
                     _contactsView.WaitForInput();
                     break;
 
                 case ContactsMenuOption.UpdateContactDetails:
-                    _contactsView.DisplayMessage("This field is for updating contact details");
+                    await UpdateContactDetails();
                     _contactsView.WaitForInput();
                     break;
 
@@ -84,6 +82,40 @@ public sealed class ContactsController
         try
         {
             await _service.DeleteContact(id);
+        }
+        catch (Exception e)
+        {
+            _contactsView.DisplayError(e.Message);
+        }
+    }
+
+    public async Task DisplayContactDetails()
+    {
+        await DisplayContacts();
+
+        var id = _contactsView.AskForContactID("display");
+
+        try
+        {
+            var contact = await _service.GetContactDetails(id);
+            _contactsView.DisplayContactDetails(contact);
+        }
+        catch (Exception e)
+        {
+            _contactsView.DisplayError(e.Message);
+        }
+    }
+
+    public async Task UpdateContactDetails()
+    {
+        await DisplayContacts();
+
+        var id = _contactsView.AskForContactID("edit");
+        try
+        {
+            var contact = await _service.GetContactDetails(id);
+            ContactInfo info = _contactsView.AskForContactInfo();
+            await _service.UpdateContact(id, info);
         }
         catch (Exception e)
         {

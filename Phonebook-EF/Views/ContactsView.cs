@@ -71,4 +71,25 @@ public sealed class ContactsView : IContactsView
 
     public void DisplayError(string message)
         => AnsiConsole.MarkupLine($"[red]{Markup.Escape(message)}[/]");
+
+    public void DisplayContactDetails(Contact contact)
+    {
+        AnsiConsole.Clear();
+
+        var table = new Table()
+            .AddColumn("Id")
+            .AddColumn("First name")
+            .AddColumn("Last name")
+            .AddColumn("Email")
+            .AddColumn("Phone Number");
+
+        table.AddRow(
+            contact.Id.ToString(),
+            contact.FirstName,
+            contact.LastName,
+            contact.Email,
+            contact.PhoneNumber);
+
+        AnsiConsole.Write(table);
+    }
 }
