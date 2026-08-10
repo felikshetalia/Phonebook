@@ -7,9 +7,6 @@ public sealed class ContactRepository : IContactRepository
     {
         using (var db = new PhonebookContext())
         {
-            if (Validators.IsContactNullOrDetailMissing(contact))
-                return;
-
             await db.Contacts.AddAsync(contact);
             await db.SaveChangesAsync();
         }

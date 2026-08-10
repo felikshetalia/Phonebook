@@ -9,9 +9,12 @@ public sealed class ContactsService
     {
         _contactRepo = repo;
     }
-    public async Task AddContact()
+    public async Task AddContact(ContactInfo contactInfo)
     {
+        if (!TryMapContactInfoToDBModel(contactInfo, out Contact? contact))
+            return;
 
+        await _contactRepo.Add(contact!);
     }
 
     public async Task UpdateContact()
@@ -30,5 +33,25 @@ public sealed class ContactsService
     public async Task<Contact> GetContactDetails()
     {
         throw new NotImplementedException();
+    }
+
+    private static bool TryMapContactInfoToDBModel(ContactInfo info, out Contact? contact)
+    {
+        contact = null;
+
+        if (!Validators.IsContactNullOrDetailMissing(info))
+        {
+            contact = new Contact
+            {
+                FirstName = info.FirstName,
+                LastName = info.LastName,
+                Email = info.Email,
+                PhoneNumber = info.PhoneNumber
+            };
+
+            return true;
+        }
+
+        return false;
     }
 }

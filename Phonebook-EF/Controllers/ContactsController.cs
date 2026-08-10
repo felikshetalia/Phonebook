@@ -23,7 +23,7 @@ public sealed class ContactsController
             switch (selectedOption)
             {
                 case ContactsMenuOption.AddContact:
-                    _contactsView.DisplayMessage("This field is for adding contacts");
+                    await AddContact();
                     _contactsView.WaitForInput();
                     break;
 
@@ -63,7 +63,8 @@ public sealed class ContactsController
 
     public async Task AddContact()
     {
-
+        ContactInfo info = _contactsView.AskForContactInfo();
+        await _service.AddContact(info);
     }
 
     public async Task DisplayContacts()
@@ -73,4 +74,5 @@ public sealed class ContactsController
 
         _contactsView.DisplayContactsList(contactsList);
     }
+
 }

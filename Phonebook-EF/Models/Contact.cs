@@ -6,3 +6,11 @@ public class Contact
     public required string Email { get; set; }
     public required string PhoneNumber { get; set; }
 }
+
+public record ContactInfo
+{
+    public required string FirstName { get; init; }
+    public required string LastName { get; init; }
+    public required string Email { get; init; }
+    public required string PhoneNumber { get; init; }
+}

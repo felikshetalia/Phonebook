@@ -1,10 +1,9 @@
 public static class Validators
 {
-    public static bool IsContactNullOrDetailMissing(Contact contact)
+    public static bool IsContactNullOrDetailMissing(ContactInfo contact)
         => contact == null ||
             string.IsNullOrWhiteSpace(contact.FirstName) ||
             string.IsNullOrWhiteSpace(contact.LastName) ||
             string.IsNullOrWhiteSpace(contact.Email) ||
-            string.IsNullOrWhiteSpace(contact.PhoneNumber) ||
-            contact.Id < 0;
+            string.IsNullOrWhiteSpace(contact.PhoneNumber);
 }

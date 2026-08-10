@@ -22,39 +22,13 @@ public sealed class PhonebookContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         => optionsBuilder.UseSqlite($"Data Source={dbPath}")
-        .LogTo(Console.WriteLine, LogLevel.Information)
         .UseSeeding((ctx, _) => SeedData.Initialize(ctx));
 
     public static void InitializeDatabase()
     {
         using var context = new PhonebookContext();
-        Console.WriteLine($"Database path: {context.dbPath}");
-
-        Console.WriteLine("Known migrations:");
-        foreach (var migration in context.Database.GetMigrations())
-        {
-            Console.WriteLine($"  {migration}");
-        }
-
-        Console.WriteLine("Applied migrations BEFORE Migrate:");
-        foreach (var migration in context.Database.GetAppliedMigrations())
-        {
-            Console.WriteLine($"  {migration}");
-        }
-
-        Console.WriteLine("Pending migrations BEFORE Migrate:");
-        foreach (var migration in context.Database.GetPendingMigrations())
-        {
-            Console.WriteLine($"  {migration}");
-        }
 
         context.Database.Migrate();
-
-        Console.WriteLine("Applied migrations AFTER Migrate:");
-        foreach (var migration in context.Database.GetAppliedMigrations())
-        {
-            Console.WriteLine($"  {migration}");
-        }
     }
 
     private static string GetProjectDirectory()

@@ -49,4 +49,20 @@ public sealed class ContactsView : IContactsView
 
         AnsiConsole.Write(table);
     }
+
+    public ContactInfo AskForContactInfo()
+    {
+        var firstName = AnsiConsole.Ask<string>("Enter first name: ");
+        var lastName = AnsiConsole.Ask<string>("Enter last name: ");
+        var email = AnsiConsole.Ask<string>("Enter email: ");
+        var phoneNo = AnsiConsole.Ask<string>("Enter phone number: ");
+
+        return new ContactInfo
+        {
+            FirstName = firstName,
+            LastName = lastName,
+            Email = email,
+            PhoneNumber = phoneNo
+        };
+    }
 }
