@@ -58,7 +58,10 @@ public sealed class ContactRepository : IContactRepository
 
             if (contact != null)
             {
-                db.Contacts.Update(newDetails);
+                contact.FirstName = newDetails.FirstName;
+                contact.LastName = newDetails.LastName;
+                contact.Email = newDetails.Email;
+                contact.PhoneNumber = newDetails.PhoneNumber;
                 await db.SaveChangesAsync();
             }
             else throw new Exception("Item with a given id couldn't be found");
