@@ -28,7 +28,12 @@ public sealed class ContactRepository : IContactRepository
     {
         using (var db = new PhonebookContext())
         {
-            return await db.Contacts.ToListAsync();
+            Console.WriteLine($"REPO DB: {db.dbPath}");
+            var contacts = await db.Contacts.ToListAsync();
+
+            Console.WriteLine($"REPO FOUND: {contacts.Count} contacts");
+
+            return contacts;
         }
     }
 
