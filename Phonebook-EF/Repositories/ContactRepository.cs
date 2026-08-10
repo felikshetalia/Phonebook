@@ -12,12 +12,18 @@ public sealed class ContactRepository : IContactRepository
         }
     }
 
-    public async Task Delete(Contact contact)
+    public async Task Delete(int contactId)
     {
         using (var db = new PhonebookContext())
         {
-            db.Contacts.Remove(contact);
-            await db.SaveChangesAsync();
+            var contact = db.Contacts.FirstOrDefault(c => c.Id == contactId);
+
+            if (contact != null)
+            {
+                db.Contacts.Remove(contact);
+                await db.SaveChangesAsync();
+            }
+            else throw new Exception("Item with a given id couldn't be found");
         }
     }
 

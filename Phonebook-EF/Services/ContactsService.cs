@@ -1,6 +1,3 @@
-using System.Reflection.Metadata.Ecma335;
-using System.Threading.Tasks;
-
 public sealed class ContactsService
 {
     private readonly IContactRepository _contactRepo;
@@ -22,9 +19,19 @@ public sealed class ContactsService
 
     }
 
-    public async Task DeleteContact(Contact contact)
+    public async Task DeleteContact(string contactId)
     {
+        if (!Validators.IsContactIdValid(contactId, out int idAsInt))
+            throw new Exception("The entered Id is invalid");
 
+        try
+        {
+            await _contactRepo.Delete(idAsInt);
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
     }
 
     public async Task<IReadOnlyCollection<Contact>> GetAllContacts()

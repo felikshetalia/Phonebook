@@ -65,4 +65,10 @@ public sealed class ContactsView : IContactsView
             PhoneNumber = phoneNo
         };
     }
+
+    public string AskForContactID(string mode)
+        => AnsiConsole.Ask<string>($"Enter the ID of the contact you want to {mode}: ");
+
+    public void DisplayError(string message)
+        => AnsiConsole.MarkupLine($"[red]{Markup.Escape(message)}[/]");
 }

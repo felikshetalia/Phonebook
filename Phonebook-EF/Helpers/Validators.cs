@@ -6,4 +6,7 @@ public static class Validators
             string.IsNullOrWhiteSpace(contact.LastName) ||
             string.IsNullOrWhiteSpace(contact.Email) ||
             string.IsNullOrWhiteSpace(contact.PhoneNumber);
+
+    public static bool IsContactIdValid(string id, out int idAsInt)
+        => int.TryParse(id, out idAsInt) && idAsInt > 0;
 }

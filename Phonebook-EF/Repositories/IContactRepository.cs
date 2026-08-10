@@ -4,5 +4,5 @@ public interface IContactRepository
     Task<IReadOnlyCollection<Contact>> GetAll();
     Task<Contact> GetOne(Contact contact);
     Task Update(int currentId, Contact newDetails);
-    Task Delete(Contact contact);
+    Task Delete(int contactId);
 }

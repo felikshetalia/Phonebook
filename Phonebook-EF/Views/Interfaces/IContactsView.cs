@@ -5,7 +5,9 @@ public interface IContactsView
     ContactsMenuOption DisplayContactsMenu();
     void DisplayMessage(string message);
     void DisplayGoodbye();
+    void DisplayError(string message);
     void WaitForInput();
     void DisplayContactsList(IReadOnlyCollection<Contact> contacts);
     ContactInfo AskForContactInfo();
+    string AskForContactID(string mode);
 }

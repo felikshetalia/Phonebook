@@ -43,7 +43,7 @@ public sealed class ContactsController
                     break;
 
                 case ContactsMenuOption.DeleteContact:
-                    _contactsView.DisplayMessage("This field is for deleting contacts");
+                    await DeleteContact();
                     _contactsView.WaitForInput();
                     break;
 
@@ -73,6 +73,22 @@ public sealed class ContactsController
             await _service.GetAllContacts();
 
         _contactsView.DisplayContactsList(contactsList);
+    }
+
+    public async Task DeleteContact()
+    {
+        await DisplayContacts();
+
+        var id = _contactsView.AskForContactID("delete");
+
+        try
+        {
+            await _service.DeleteContact(id);
+        }
+        catch (Exception e)
+        {
+            _contactsView.DisplayError(e.Message);
+        }
     }
 
 }
