@@ -21,4 +21,14 @@ public static class Validators
 
         return Regex.IsMatch(email, patternCheck, RegexOptions.IgnoreCase);
     }
+
+    public static bool IsPhoneNumberValid(string phone)
+    {
+        if (string.IsNullOrWhiteSpace(phone))
+            return false;
+
+        string patternCheck = "^\\+?[1-9][0-9]{7,14}$";
+
+        return Regex.IsMatch(phone, patternCheck, RegexOptions.IgnoreCase);
+    }
 }

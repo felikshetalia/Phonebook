@@ -11,6 +11,9 @@ public sealed class ContactsService
         if (!Validators.IsEmailValid(contactInfo.Email))
             throw new Exception("The entered email is not valid");
 
+        if (!Validators.IsPhoneNumberValid(contactInfo.PhoneNumber))
+            throw new Exception("The entered phone number is not valid");
+
         if (!TryMapContactInfoToDBModel(contactInfo, out Contact? contact))
             return;
 
@@ -31,6 +34,9 @@ public sealed class ContactsService
 
         if (!Validators.IsEmailValid(newDetails.Email))
             throw new Exception("The entered email is not valid");
+
+        if (!Validators.IsPhoneNumberValid(newDetails.PhoneNumber))
+            throw new Exception("The entered phone number is not valid");
 
         if (!TryMapContactInfoToDBModel(newDetails, out Contact? contact))
             return;
