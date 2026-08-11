@@ -62,15 +62,31 @@ public sealed class ContactsController
     public async Task AddContact()
     {
         ContactInfo info = _contactsView.AskForContactInfo();
-        await _service.AddContact(info);
+        try
+        {
+            await _service.AddContact(info);
+        }
+        catch (Exception e)
+        {
+            _contactsView.DisplayError(e.Message);
+        }
+        _contactsView.DisplayMessage("Contact added successfully.");
     }
 
     public async Task DisplayContacts()
     {
-        IReadOnlyCollection<Contact> contactsList =
-            await _service.GetAllContacts();
+        IReadOnlyCollection<Contact> contactsList;
 
-        _contactsView.DisplayContactsList(contactsList);
+        try
+        {
+            contactsList = await _service.GetAllContacts();
+            _contactsView.DisplayContactsList(contactsList);
+        }
+        catch (Exception e)
+        {
+            _contactsView.DisplayError(e.Message);
+        }
+
     }
 
     public async Task DeleteContact()
@@ -87,6 +103,7 @@ public sealed class ContactsController
         {
             _contactsView.DisplayError(e.Message);
         }
+        _contactsView.DisplayMessage("Contact deleted successfully.");
     }
 
     public async Task DisplayContactDetails()
@@ -121,6 +138,7 @@ public sealed class ContactsController
         {
             _contactsView.DisplayError(e.Message);
         }
+        _contactsView.DisplayMessage("Contact updated successfully.");
     }
 
 }

@@ -8,16 +8,29 @@ public sealed class ContactsService
     }
     public async Task AddContact(ContactInfo contactInfo)
     {
+        if (!Validators.IsEmailValid(contactInfo.Email))
+            throw new Exception("The entered email is not valid");
+
         if (!TryMapContactInfoToDBModel(contactInfo, out Contact? contact))
             return;
 
-        await _contactRepo.Add(contact!);
+        try
+        {
+            await _contactRepo.Add(contact!);
+        }
+        catch (OperationCanceledException e)
+        {
+            throw new Exception("Adding operation was unsuccessful" + e.Message);
+        }
     }
 
     public async Task UpdateContact(string currentId, ContactInfo newDetails)
     {
         if (!Validators.IsContactIdValid(currentId, out int idAsInt))
             throw new Exception("The entered Id is invalid");
+
+        if (!Validators.IsEmailValid(newDetails.Email))
+            throw new Exception("The entered email is not valid");
 
         if (!TryMapContactInfoToDBModel(newDetails, out Contact? contact))
             return;
@@ -48,7 +61,16 @@ public sealed class ContactsService
     }
 
     public async Task<IReadOnlyCollection<Contact>> GetAllContacts()
-        => await _contactRepo.GetAll();
+    {
+        try
+        {
+            return await _contactRepo.GetAll();
+        }
+        catch (Exception e)
+        {
+            throw new Exception(e.Message);
+        }
+    }
 
     public async Task<Contact> GetContactDetails(string contactId)
     {
