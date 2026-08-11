@@ -54,8 +54,8 @@ public sealed class ContactsView : IContactsView
     {
         var firstName = AnsiConsole.Ask<string>("Enter first name: ");
         var lastName = AnsiConsole.Ask<string>("Enter last name: ");
-        var email = AnsiConsole.Ask<string>("Enter email: ");
-        var phoneNo = AnsiConsole.Ask<string>("Enter phone number: ");
+        var email = AnsiConsole.Ask<string>("Enter email (e.g. name@example.com): ");
+        var phoneNo = AnsiConsole.Ask<string>("Enter phone number (8-15 digits, optional leading +, no spaces): ");
 
         return new ContactInfo
         {

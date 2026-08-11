@@ -15,7 +15,7 @@ public sealed class ContactsService
             throw new Exception("The entered phone number is not valid");
 
         if (!TryMapContactInfoToDBModel(contactInfo, out Contact? contact))
-            return;
+            throw new Exception("Couldn't perform update: Null field");
 
         try
         {
@@ -39,7 +39,7 @@ public sealed class ContactsService
             throw new Exception("The entered phone number is not valid");
 
         if (!TryMapContactInfoToDBModel(newDetails, out Contact? contact))
-            return;
+            throw new Exception("Couldn't perform update: Null field");
 
         try
         {

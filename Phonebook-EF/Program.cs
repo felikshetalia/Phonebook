@@ -6,7 +6,15 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        PhonebookContext.InitializeDatabase();
+        try
+        {
+            PhonebookContext.InitializeDatabase();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Database initialization failed: {e.Message}");
+            return;
+        }
 
         IAppView appView = new AppView();
         IContactsView contactsView = new ContactsView();
