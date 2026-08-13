@@ -1,10 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 namespace Phonebook_EF;
 
 public sealed class PhonebookContext : DbContext
 {
     public DbSet<Contact> Contacts { get; set; }
+    public DbSet<Category> Categories { get; set; }
 
     public string dbPath { get; }
 

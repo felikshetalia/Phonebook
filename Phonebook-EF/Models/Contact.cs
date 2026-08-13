@@ -5,6 +5,9 @@ public class Contact
     public required string LastName { get; set; }
     public required string Email { get; set; }
     public required string PhoneNumber { get; set; }
+
+    public int? CategoryId { get; set; }
+    public Category? Category { get; set; } = null!;
 }
 
 public record ContactInfo

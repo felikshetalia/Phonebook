@@ -56,7 +56,6 @@ public sealed class ContactsController
                         "Unknown menu option.");
             }
         }
-        _contactsView.DisplayGoodbye();
     }
 
     public async Task AddContact()

@@ -7,6 +7,8 @@ public static class Formatters
                 => ContactsFormatOption((ContactsMenuOption)(object)option),
             Type t when t == typeof(MainMenuOption)
                 => MainFormatOption((MainMenuOption)(object)option),
+            Type t when t == typeof(CategoriesMenuOption)
+                => CategoriesFormatOption((CategoriesMenuOption)(object)option),
             _ => throw new ArgumentOutOfRangeException(nameof(option), option, "Unsupported enum type")
         };
 
@@ -19,6 +21,17 @@ public static class Formatters
             ContactsMenuOption.UpdateContactDetails => "Update contact details",
             ContactsMenuOption.DeleteContact => "Delete contact",
             ContactsMenuOption.Back => "Go back",
+            _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
+        };
+
+    private static string CategoriesFormatOption(CategoriesMenuOption option)
+        => option switch
+        {
+            CategoriesMenuOption.Family => "Family",
+            CategoriesMenuOption.Friends => "Friends",
+            CategoriesMenuOption.Work => "Work",
+            CategoriesMenuOption.Other => "Other",
+            CategoriesMenuOption.Back => "Go back",
             _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
         };
 

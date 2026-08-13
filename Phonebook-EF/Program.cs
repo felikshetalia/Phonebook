@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Phonebook_EF;
+﻿namespace Phonebook_EF;
 
 class Program
 {

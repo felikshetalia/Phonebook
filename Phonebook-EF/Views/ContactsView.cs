@@ -19,9 +19,6 @@ public sealed class ContactsView : IContactsView
     public void DisplayMessage(string message)
         => AnsiConsole.MarkupLine($"[green]{Markup.Escape(message)}[/]");
 
-    public void DisplayGoodbye()
-        => AnsiConsole.MarkupLine("[yellow]Goodbye![/]");
-
     public void WaitForInput()
     {
         AnsiConsole.MarkupLine("\n[grey]Press any key to continue.[/]");

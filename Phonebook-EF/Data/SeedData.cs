@@ -6,37 +6,51 @@ public static class SeedData
 {
     public static void Initialize(DbContext context)
     {
-        if (context.Set<Contact>().Any())
+
+        if (!context.Set<Category>().Any())
         {
-            return;
+            var categories = new List<Category>
+            {
+                new() { Title = "Family" },
+                new() { Title = "Friends" },
+                new() { Title = "Work" },
+                new() { Title = "Other" }
+            };
+
+            context.Set<Category>().AddRange(categories);
+            context.SaveChanges();
         }
 
-        var contacts = new List<Contact>
+        if (!context.Set<Contact>().Any())
         {
-            new()
+            var contacts = new List<Contact>
             {
-                FirstName = "Alice",
-                LastName = "Johnson",
-                Email = "alice.johnson@example.com",
-                PhoneNumber = "555-0101"
-            },
-            new()
-            {
-                FirstName = "Bob",
-                LastName = "Smith",
-                Email = "bob.smith@example.com",
-                PhoneNumber = "555-0102"
-            },
-            new()
-            {
-                FirstName = "Clara",
-                LastName = "Nguyen",
-                Email = "clara.nguyen@example.com",
-                PhoneNumber = "555-0103"
-            }
-        };
+                new()
+                {
+                    FirstName = "Alice",
+                    LastName = "Johnson",
+                    Email = "alice.johnson@example.com",
+                    PhoneNumber = "555-0101"
+                },
+                new()
+                {
+                    FirstName = "Bob",
+                    LastName = "Smith",
+                    Email = "bob.smith@example.com",
+                    PhoneNumber = "555-0102"
+                },
+                new()
+                {
+                    FirstName = "Clara",
+                    LastName = "Nguyen",
+                    Email = "clara.nguyen@example.com",
+                    PhoneNumber = "555-0103"
+                }
+            };
 
-        context.Set<Contact>().AddRange(contacts);
-        context.SaveChanges();
+            context.Set<Contact>().AddRange(contacts);
+            context.SaveChanges();
+        }
+
     }
 }
