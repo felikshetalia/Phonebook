@@ -16,4 +16,5 @@ public record ContactInfo
     public required string LastName { get; init; }
     public required string Email { get; init; }
     public required string PhoneNumber { get; init; }
+    public required string Category { get; init; }
 }

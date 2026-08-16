@@ -19,7 +19,8 @@
                 FirstName = "John",
                 LastName = "",
                 Email = "john@example.com",
-                PhoneNumber = "+441234567890"
+                PhoneNumber = "+441234567890",
+                Category = "Family"
             };
 
             bool result = Validators.IsContactNullOrDetailMissing(contact);
@@ -35,7 +36,8 @@
                 FirstName = "Jane",
                 LastName = "Doe",
                 Email = "jane.doe@example.com",
-                PhoneNumber = "+441234567890"
+                PhoneNumber = "+441234567890",
+                Category = "Friends"
             };
 
             bool result = Validators.IsContactNullOrDetailMissing(contact);

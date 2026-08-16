@@ -31,7 +31,7 @@ public sealed class ContactRepository : IContactRepository
     {
         using (var db = new PhonebookContext())
         {
-            var contacts = await db.Contacts.ToListAsync();
+            var contacts = await db.Contacts.Include(c => c.Category).ToListAsync();
             return contacts;
         }
     }
@@ -40,7 +40,7 @@ public sealed class ContactRepository : IContactRepository
     {
         using (var db = new PhonebookContext())
         {
-            var contact = await db.Contacts.FirstOrDefaultAsync(c => c.Id == contactId);
+            var contact = await db.Contacts.Include(c => c.Category).FirstOrDefaultAsync(c => c.Id == contactId);
 
             if (contact != null)
             {

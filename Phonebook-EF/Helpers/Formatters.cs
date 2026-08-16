@@ -38,7 +38,8 @@ public static class Formatters
     private static string MainFormatOption(MainMenuOption option)
         => option switch
         {
-            MainMenuOption.RunContacts => "Run contacts",
+            MainMenuOption.RunContacts => "Contacts",
+            MainMenuOption.RunCategories => "Categories",
             MainMenuOption.Exit => "Exit",
             _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
         };

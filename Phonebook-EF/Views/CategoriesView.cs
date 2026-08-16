@@ -17,26 +17,37 @@ public sealed class CategoriesView : ICategoriesView
 
     public void DisplayContactsList(IReadOnlyCollection<Contact> contacts)
     {
-        throw new NotImplementedException();
-    }
+        AnsiConsole.Clear();
 
-    public CategoriesMenuOption DisplayContactsMenu()
-    {
-        throw new NotImplementedException();
+        var table = new Table()
+            .AddColumn("Id")
+            .AddColumn("First name")
+            .AddColumn("Last name")
+            .AddColumn("Email")
+            .AddColumn("Phone Number")
+            .AddColumn("Category");
+
+        foreach (var contact in contacts)
+            table.AddRow(
+                contact.Id.ToString(),
+                contact.FirstName,
+                contact.LastName,
+                contact.Email,
+                contact.PhoneNumber,
+                contact.Category!.Title);
+
+        AnsiConsole.Write(table);
     }
 
     public void DisplayError(string message)
-    {
-        throw new NotImplementedException();
-    }
+        => AnsiConsole.MarkupLine($"[red]{Markup.Escape(message)}[/]");
 
     public void DisplayMessage(string message)
-    {
-        throw new NotImplementedException();
-    }
+        => AnsiConsole.MarkupLine($"[green]{Markup.Escape(message)}[/]");
 
     public void WaitForInput()
     {
-        throw new NotImplementedException();
+        AnsiConsole.MarkupLine("\n[grey]Press any key to continue.[/]");
+        AnsiConsole.Console.Input.ReadKey(true);
     }
 }

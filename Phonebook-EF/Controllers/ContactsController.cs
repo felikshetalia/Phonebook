@@ -4,11 +4,13 @@ public sealed class ContactsController
 {
     private readonly IContactsView _contactsView;
     private readonly ContactsService _service;
+    private readonly CategoriesController _categoryController;
 
-    public ContactsController(IContactsView contactsView, ContactsService service)
+    public ContactsController(IContactsView contactsView, ContactsService service, CategoriesController categoryController)
     {
         _contactsView = contactsView;
         _service = service;
+        _categoryController = categoryController;
     }
     public async Task Run()
     {
@@ -60,7 +62,9 @@ public sealed class ContactsController
 
     public async Task AddContact()
     {
-        ContactInfo info = _contactsView.AskForContactInfo();
+        IReadOnlyCollection<Category> categoryList = await _categoryController.FetchCategories();
+
+        ContactInfo info = _contactsView.AskForContactInfo(categoryList);
         try
         {
             await _service.AddContact(info);
@@ -124,13 +128,15 @@ public sealed class ContactsController
 
     public async Task UpdateContactDetails()
     {
+        IReadOnlyCollection<Category> categoryList = await _categoryController.FetchCategories();
+
         await DisplayContacts();
 
         var id = _contactsView.AskForContactID("edit");
         try
         {
             var contact = await _service.GetContactDetails(id);
-            ContactInfo info = _contactsView.AskForContactInfo();
+            ContactInfo info = _contactsView.AskForContactInfo(categoryList);
             await _service.UpdateContact(id, info);
             _contactsView.DisplayMessage("Contact updated successfully.");
         }

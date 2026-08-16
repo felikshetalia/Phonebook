@@ -30,21 +30,24 @@ public static class SeedData
                     FirstName = "Alice",
                     LastName = "Johnson",
                     Email = "alice.johnson@example.com",
-                    PhoneNumber = "555-0101"
+                    PhoneNumber = "555-0101",
+                    CategoryId = 1
                 },
                 new()
                 {
                     FirstName = "Bob",
                     LastName = "Smith",
                     Email = "bob.smith@example.com",
-                    PhoneNumber = "555-0102"
+                    PhoneNumber = "555-0102",
+                    CategoryId = 3
                 },
                 new()
                 {
                     FirstName = "Clara",
                     LastName = "Nguyen",
                     Email = "clara.nguyen@example.com",
-                    PhoneNumber = "555-0103"
+                    PhoneNumber = "555-0103",
+                    CategoryId = 2
                 }
             };
 

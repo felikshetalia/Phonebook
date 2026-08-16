@@ -8,6 +8,6 @@ public interface IContactsView
     void WaitForInput();
     void DisplayContactsList(IReadOnlyCollection<Contact> contacts);
     void DisplayContactDetails(Contact contact);
-    ContactInfo AskForContactInfo();
+    ContactInfo AskForContactInfo(IReadOnlyCollection<Category> categoryList);
     string AskForContactID(string mode);
 }

@@ -34,7 +34,8 @@ public sealed class ContactsView : IContactsView
             .AddColumn("First name")
             .AddColumn("Last name")
             .AddColumn("Email")
-            .AddColumn("Phone Number");
+            .AddColumn("Phone Number")
+            .AddColumn("Category");
 
         foreach (var contact in contacts)
             table.AddRow(
@@ -42,24 +43,30 @@ public sealed class ContactsView : IContactsView
                 contact.FirstName,
                 contact.LastName,
                 contact.Email,
-                contact.PhoneNumber);
+                contact.PhoneNumber,
+                contact.Category == null ? "" : contact.Category.Title);
 
         AnsiConsole.Write(table);
     }
 
-    public ContactInfo AskForContactInfo()
+    public ContactInfo AskForContactInfo(IReadOnlyCollection<Category> categoryList)
     {
         var firstName = AnsiConsole.Ask<string>("Enter first name: ");
         var lastName = AnsiConsole.Ask<string>("Enter last name: ");
         var email = AnsiConsole.Ask<string>("Enter email (e.g. name@example.com): ");
         var phoneNo = AnsiConsole.Ask<string>("Enter phone number (8-15 digits, optional leading +, no spaces): ");
+        var category = AnsiConsole.Prompt(new SelectionPrompt<Category>()
+            .Title("Category: ")
+            .AddChoices(categoryList)
+            .UseConverter(c => c.Title));
 
         return new ContactInfo
         {
             FirstName = firstName,
             LastName = lastName,
             Email = email,
-            PhoneNumber = phoneNo
+            PhoneNumber = phoneNo,
+            Category = category.Title
         };
     }
 
@@ -78,14 +85,16 @@ public sealed class ContactsView : IContactsView
             .AddColumn("First name")
             .AddColumn("Last name")
             .AddColumn("Email")
-            .AddColumn("Phone Number");
+            .AddColumn("Phone Number")
+            .AddColumn("Category");
 
         table.AddRow(
             contact.Id.ToString(),
             contact.FirstName,
             contact.LastName,
             contact.Email,
-            contact.PhoneNumber);
+            contact.PhoneNumber,
+            contact.Category!.Title);
 
         AnsiConsole.Write(table);
     }

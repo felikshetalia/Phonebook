@@ -1,10 +1,12 @@
 public sealed class ContactsService
 {
     private readonly IContactRepository _contactRepo;
+    private readonly ICategoryRepository _categoryRepo;
 
-    public ContactsService(IContactRepository repo)
+    public ContactsService(IContactRepository repo, ICategoryRepository categoryRepo)
     {
         _contactRepo = repo;
+        _categoryRepo = categoryRepo;
     }
     public async Task AddContact(ContactInfo contactInfo)
     {
@@ -14,12 +16,13 @@ public sealed class ContactsService
         if (!Validators.IsPhoneNumberValid(contactInfo.PhoneNumber))
             throw new Exception("The entered phone number is not valid");
 
-        if (!TryMapContactInfoToDBModel(contactInfo, out Contact? contact))
+        var contact = await MapContactInfoToDBModel(contactInfo);
+        if (contact == null)
             throw new Exception("Couldn't perform update: Null field");
 
         try
         {
-            await _contactRepo.Add(contact!);
+            await _contactRepo.Add(contact);
         }
         catch (OperationCanceledException e)
         {
@@ -38,12 +41,13 @@ public sealed class ContactsService
         if (!Validators.IsPhoneNumberValid(newDetails.PhoneNumber))
             throw new Exception("The entered phone number is not valid");
 
-        if (!TryMapContactInfoToDBModel(newDetails, out Contact? contact))
+        var contact = await MapContactInfoToDBModel(newDetails);
+        if (contact == null)
             throw new Exception("Couldn't perform update: Null field");
 
         try
         {
-            await _contactRepo.Update(idAsInt, contact!);
+            await _contactRepo.Update(idAsInt, contact);
         }
         catch (Exception e)
         {
@@ -93,23 +97,31 @@ public sealed class ContactsService
         }
     }
 
-    private static bool TryMapContactInfoToDBModel(ContactInfo info, out Contact? contact)
+    private async Task<Contact?> MapContactInfoToDBModel(ContactInfo info)
     {
-        contact = null;
+        if (Validators.IsContactNullOrDetailMissing(info))
+            return null;
 
-        if (!Validators.IsContactNullOrDetailMissing(info))
+        var categoryId = await GetCategoryIdByTitle(info.Category);
+        
+        return new Contact
         {
-            contact = new Contact
-            {
-                FirstName = info.FirstName,
-                LastName = info.LastName,
-                Email = info.Email,
-                PhoneNumber = info.PhoneNumber
-            };
+            FirstName = info.FirstName,
+            LastName = info.LastName,
+            Email = info.Email,
+            PhoneNumber = info.PhoneNumber,
+            CategoryId = categoryId
+        };
+    }
 
-            return true;
-        }
-
-        return false;
+    private async Task<int> GetCategoryIdByTitle(string categoryTitle)
+    {
+        var categories = await _categoryRepo.GetAll();
+        var category = categories.FirstOrDefault(c => c.Title == categoryTitle);
+        
+        if (category == null)
+            throw new Exception($"Category '{categoryTitle}' not found");
+        
+        return category.Id;
     }
 }

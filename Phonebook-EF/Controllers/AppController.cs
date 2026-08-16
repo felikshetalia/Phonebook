@@ -6,11 +6,13 @@ public sealed class AppController
 {
     private readonly IAppView _appView;
     private readonly ContactsController _contactsController;
+    private readonly CategoriesController _categoryController;
 
-    public AppController(IAppView view, ContactsController contactsController)
+    public AppController(IAppView view, ContactsController contactsController, CategoriesController categoryController)
     {
         _appView = view;
         _contactsController = contactsController;
+        _categoryController = categoryController;
     }
 
     public async Task Run()
@@ -25,6 +27,9 @@ public sealed class AppController
             {
                 case MainMenuOption.RunContacts:
                     await _contactsController.Run();
+                    break;
+                case MainMenuOption.RunCategories:
+                    await _categoryController.Run();
                     break;
                 case MainMenuOption.Exit:
                     isRunning = false;
