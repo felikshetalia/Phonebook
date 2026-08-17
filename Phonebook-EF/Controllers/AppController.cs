@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace Phonebook_EF;
 
 public sealed class AppController
@@ -7,12 +5,17 @@ public sealed class AppController
     private readonly IAppView _appView;
     private readonly ContactsController _contactsController;
     private readonly CategoriesController _categoryController;
+    private readonly EmailController _emailController;
 
-    public AppController(IAppView view, ContactsController contactsController, CategoriesController categoryController)
+    public AppController(IAppView view,
+    ContactsController contactsController,
+    CategoriesController categoryController,
+    EmailController emailController)
     {
         _appView = view;
         _contactsController = contactsController;
         _categoryController = categoryController;
+        _emailController = emailController;
     }
 
     public async Task Run()
@@ -30,6 +33,9 @@ public sealed class AppController
                     break;
                 case MainMenuOption.RunCategories:
                     await _categoryController.Run();
+                    break;
+                case MainMenuOption.SendEmail:
+                    await _emailController.Run();
                     break;
                 case MainMenuOption.Exit:
                     isRunning = false;

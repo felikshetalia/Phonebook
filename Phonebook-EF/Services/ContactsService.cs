@@ -97,13 +97,29 @@ public sealed class ContactsService
         }
     }
 
+    public async Task<Contact> GetContactByEmail(string email)
+    {
+        if (!Validators.IsEmailValid(email))
+            throw new Exception("The entered email is not valid");
+
+        var contactList = await GetAllContacts();
+
+        var contact = contactList.FirstOrDefault(
+            c => c.Email.Equals(email, StringComparison.OrdinalIgnoreCase));
+
+        if (contact == null)
+            throw new Exception("No contact with that email was found.");
+
+        return contact;
+    }
+
     private async Task<Contact?> MapContactInfoToDBModel(ContactInfo info)
     {
         if (Validators.IsContactNullOrDetailMissing(info))
             return null;
 
         var categoryId = await GetCategoryIdByTitle(info.Category);
-        
+
         return new Contact
         {
             FirstName = info.FirstName,
@@ -118,10 +134,10 @@ public sealed class ContactsService
     {
         var categories = await _categoryRepo.GetAll();
         var category = categories.FirstOrDefault(c => c.Title == categoryTitle);
-        
+
         if (category == null)
             throw new Exception($"Category '{categoryTitle}' not found");
-        
+
         return category.Id;
     }
 }

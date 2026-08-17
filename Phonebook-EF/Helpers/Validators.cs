@@ -32,4 +32,8 @@ public static class Validators
 
         return Regex.IsMatch(phone, patternCheck);
     }
+
+    public static bool IsEmailBodyEmpty(string body)
+        => string.IsNullOrWhiteSpace(body);
+
 }

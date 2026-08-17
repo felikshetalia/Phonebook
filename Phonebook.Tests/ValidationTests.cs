@@ -201,6 +201,36 @@
                 .SetName("IsEmailValid_ReturnsFalse_NoDomainName")
         };
 
+        private static readonly IEnumerable<TestCaseData> EmailBodyValidationTestCases = new[]
+        {
+            new TestCaseData("Hello!", false)
+                .SetName("IsEmailBodyValid_ReturnsTrue_ForSimpleBody"),
+
+            new TestCaseData("This is an email message.", false)
+                .SetName("IsEmailBodyValid_ReturnsTrue_ForSentence"),
+
+            new TestCaseData("Hello,\nHow are you?\nRegards", false)
+                .SetName("IsEmailBodyValid_ReturnsTrue_ForMultilineBody"),
+
+            new TestCaseData("a", false)
+                .SetName("IsEmailBodyValid_ReturnsTrue_ForSingleCharacter"),
+
+            new TestCaseData("", true)
+                .SetName("IsEmailBodyValid_ReturnsFalse_ForEmptyBody"),
+
+            new TestCaseData("   ", true)
+                .SetName("IsEmailBodyValid_ReturnsFalse_ForWhitespaceBody"),
+
+            new TestCaseData("\t", true)
+                .SetName("IsEmailBodyValid_ReturnsFalse_ForTabOnlyBody"),
+
+            new TestCaseData("\n\r", true)
+                .SetName("IsEmailBodyValid_ReturnsFalse_ForNewlineOnlyBody"),
+
+            new TestCaseData(null, true)
+                .SetName("IsEmailBodyValid_ReturnsFalse_ForNullBody")
+        };
+
         private static readonly IEnumerable<TestCaseData> PhoneNumberValidationTestCases = new[]
         {
             new TestCaseData("+12345678901", true)
@@ -272,19 +302,14 @@
 
 
         [TestCaseSource(nameof(ContactDetailsTestCases))]
-        public void IsContactNullOrDetailMissing_ReturnsCorrectResult(
-            ContactInfo? contact,
-            bool expected)
+        public void IsContactNullOrDetailMissing_ReturnsCorrectResult(ContactInfo? contact, bool expected)
         {
             bool result = Validators.IsContactNullOrDetailMissing(contact!);
-
             Assert.That(result, Is.EqualTo(expected));
         }
 
         [TestCaseSource(nameof(ValidContactIdTestCases))]
-        public void IsContactIdValid_ReturnsTrueAndParsesId(
-            string input,
-            int expectedId)
+        public void IsContactIdValid_ReturnsTrueAndParsesId(string input, int expectedId)
         {
             bool result = Validators.IsContactIdValid(input, out int id);
 
@@ -299,27 +324,27 @@
         public void IsContactIdValid_ReturnsFalseForInvalidId(string input)
         {
             bool result = Validators.IsContactIdValid(input, out _);
-
             Assert.That(result, Is.False);
         }
 
         [TestCaseSource(nameof(EmailValidationTestCases))]
-        public void IsEmailValid_ReturnsCorrectResult(
-            string email,
-            bool expected)
+        public void IsEmailValid_ReturnsCorrectResult(string email, bool expected)
         {
             bool result = Validators.IsEmailValid(email);
-
             Assert.That(result, Is.EqualTo(expected));
         }
 
         [TestCaseSource(nameof(PhoneNumberValidationTestCases))]
-        public void IsPhoneNumberValid_ReturnsCorrectResult(
-            string phoneNumber,
-            bool expected)
+        public void IsPhoneNumberValid_ReturnsCorrectResult(string phoneNumber, bool expected)
         {
             bool result = Validators.IsPhoneNumberValid(phoneNumber);
+            Assert.That(result, Is.EqualTo(expected));
+        }
 
+        [TestCaseSource(nameof(EmailBodyValidationTestCases))]
+        public void IsEmailBodyValid_ReturnsCorrectResult(string body, bool expected)
+        {
+            bool result = Validators.IsEmailBodyEmpty(body);
             Assert.That(result, Is.EqualTo(expected));
         }
     }

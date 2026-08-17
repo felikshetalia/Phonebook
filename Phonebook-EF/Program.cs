@@ -17,16 +17,19 @@ class Program
         IAppView appView = new AppView();
         IContactsView contactsView = new ContactsView();
         ICategoriesView categoriesView = new CategoriesView();
+        IEmailView emailView = new EmailView();
 
         IContactRepository contactRepository = new ContactRepository();
         ICategoryRepository categoryRepository = new CategoryRepository();
 
         ContactsService contactsService = new(contactRepository, categoryRepository);
         CategoriesService categoriesService = new(categoryRepository);
+        EmailService emailService = new(contactsService);
 
         CategoriesController categoriesController = new(categoriesView, categoriesService);
         ContactsController contactsController = new(contactsView, contactsService, categoriesController);
-        AppController app = new(appView, contactsController, categoriesController);
+        EmailController emailController = new(emailView, emailService);
+        AppController app = new(appView, contactsController, categoriesController, emailController);
 
         await app.Run();
     }
