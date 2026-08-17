@@ -3,91 +3,324 @@
     [TestFixture]
     public class ValidationTests
     {
-        [Test]
-        public void IsContactNullOrDetailMissing_ReturnsTrue_WhenContactIsNull()
+        private static readonly IEnumerable<TestCaseData> ContactDetailsTestCases = new[]
         {
-            bool result = Validators.IsContactNullOrDetailMissing(null!);
+            new TestCaseData((ContactInfo?)null, true)
+                .SetName("IsContactNullOrDetailMissing_ReturnsTrue_WhenContactIsNull"),
 
-            Assert.That(result, Is.True);
+            new TestCaseData(
+                new ContactInfo
+                {
+                    FirstName = "John",
+                    LastName = "",
+                    Email = "john@example.com",
+                    PhoneNumber = "+441234567890",
+                    Category = "Family"
+                },
+                true)
+                .SetName("IsContactNullOrDetailMissing_ReturnsTrue_WhenLastNameIsEmpty"),
+
+            new TestCaseData(
+                new ContactInfo
+                {
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    Email = "jane.doe@example.com",
+                    PhoneNumber = "+441234567890",
+                    Category = ""
+                },
+                true)
+                .SetName("IsContactNullOrDetailMissing_ReturnsTrue_WhenCategoryIsEmpty"),
+
+            new TestCaseData(
+                new ContactInfo
+                {
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    Email = "jane.doe@example.com",
+                    PhoneNumber = "+441234567890",
+                    Category = "   "
+                },
+                true)
+                .SetName("IsContactNullOrDetailMissing_ReturnsTrue_WhenCategoryIsWhitespace"),
+
+            new TestCaseData(
+                new ContactInfo
+                {
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    Email = "jane.doe@example.com",
+                    PhoneNumber = "+441234567890",
+                    Category = "Friends"
+                },
+                false)
+                .SetName("IsContactNullOrDetailMissing_ReturnsFalse_WhenAllDetailsArePresent"),
+
+            new TestCaseData(
+                new ContactInfo
+                {
+                    FirstName = "",
+                    LastName = "Doe",
+                    Email = "jane.doe@example.com",
+                    PhoneNumber = "+441234567890",
+                    Category = "Friends"
+                },
+                true)
+                .SetName("IsContactNullOrDetailMissing_ReturnsTrue_WhenFirstNameIsEmpty"),
+
+            new TestCaseData(
+                new ContactInfo
+                {
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    Email = "   ",
+                    PhoneNumber = "+441234567890",
+                    Category = "Friends"
+                },
+                true)
+                .SetName("IsContactNullOrDetailMissing_ReturnsTrue_WhenEmailIsWhitespace"),
+
+            new TestCaseData(
+                new ContactInfo
+                {
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    Email = "jane.doe@example.com",
+                    PhoneNumber = "",
+                    Category = "Friends"
+                },
+                true)
+                .SetName("IsContactNullOrDetailMissing_ReturnsTrue_WhenPhoneNumberIsEmpty"),
+
+            new TestCaseData(
+                new ContactInfo
+                {
+                    FirstName = "",
+                    LastName = "",
+                    Email = "",
+                    PhoneNumber = "",
+                    Category = ""
+                },
+                true)
+                .SetName("IsContactNullOrDetailMissing_ReturnsTrue_WhenAllFieldsAreEmpty"),
+
+            new TestCaseData(
+                new ContactInfo
+                {
+                    FirstName = "   ",
+                    LastName = "   ",
+                    Email = "   ",
+                    PhoneNumber = "   ",
+                    Category = "   "
+                },
+                true)
+                .SetName("IsContactNullOrDetailMissing_ReturnsTrue_WhenAllFieldsAreWhitespace")
+        };
+
+        private static readonly IEnumerable<TestCaseData> ValidContactIdTestCases = new[]
+        {
+            new TestCaseData("42", 42)
+                .SetName("IsContactIdValid_ReturnsTrue_ForPositiveId"),
+
+            new TestCaseData("999999", 999999)
+                .SetName("IsContactIdValid_ReturnsTrue_ForLargePositiveId")
+        };
+
+        private static readonly IEnumerable<TestCaseData> InvalidContactIdTestCases = new[]
+        {
+            new TestCaseData("0")
+                .SetName("IsContactIdValid_ReturnsFalse_ForZero"),
+
+            new TestCaseData("-5")
+                .SetName("IsContactIdValid_ReturnsFalse_ForNegative"),
+
+            new TestCaseData("-100")
+                .SetName("IsContactIdValid_ReturnsFalse_ForLargeNegative"),
+
+            new TestCaseData("abc")
+                .SetName("IsContactIdValid_ReturnsFalse_ForNonNumeric"),
+
+            new TestCaseData("12.5")
+                .SetName("IsContactIdValid_ReturnsFalse_ForDecimal"),
+
+            new TestCaseData("")
+                .SetName("IsContactIdValid_ReturnsFalse_ForEmpty"),
+
+            new TestCaseData("   ")
+                .SetName("IsContactIdValid_ReturnsFalse_ForWhitespace"),
+
+            new TestCaseData("2147483648")
+                .SetName("IsContactIdValid_ReturnsFalse_WhenAboveIntMaxValue"),
+
+            new TestCaseData("-2147483649")
+                .SetName("IsContactIdValid_ReturnsFalse_WhenBelowIntMinValue"),
+        };
+
+        private static readonly IEnumerable<TestCaseData> EmailValidationTestCases = new[]
+        {
+            new TestCaseData("user@example.com", true)
+                .SetName("IsEmailValid_ReturnsTrue_ValidSimple"),
+
+            new TestCaseData("user.name+tag@example.co.uk", true)
+                .SetName("IsEmailValid_ReturnsTrue_WithDotAndPlus"),
+
+            new TestCaseData("test.email@sub.domain.com", true)
+                .SetName("IsEmailValid_ReturnsTrue_WithSubdomain"),
+
+            new TestCaseData("a@b.co", true)
+                .SetName("IsEmailValid_ReturnsTrue_Short"),
+
+            new TestCaseData("user123@test-domain.com", true)
+                .SetName("IsEmailValid_ReturnsTrue_WithHyphen"),
+
+            new TestCaseData("user..name@example.com", true)
+                .SetName("IsEmailValid_ReturnsTrue_DoubleDot"),
+
+            new TestCaseData("", false)
+                .SetName("IsEmailValid_ReturnsFalse_Empty"),
+
+            new TestCaseData("   ", false)
+                .SetName("IsEmailValid_ReturnsFalse_Whitespace"),
+
+            new TestCaseData("invalid-email", false)
+                .SetName("IsEmailValid_ReturnsFalse_NoAt"),
+
+            new TestCaseData("user@", false)
+                .SetName("IsEmailValid_ReturnsFalse_NoDomain"),
+
+            new TestCaseData("@example.com", false)
+                .SetName("IsEmailValid_ReturnsFalse_NoLocalPart"),
+
+            new TestCaseData("user@localhost", false)
+                .SetName("IsEmailValid_ReturnsFalse_NoTld"),
+
+            new TestCaseData("user @example.com", false)
+                .SetName("IsEmailValid_ReturnsFalse_WithSpace"),
+
+            new TestCaseData("user@.com", false)
+                .SetName("IsEmailValid_ReturnsFalse_NoDomainName")
+        };
+
+        private static readonly IEnumerable<TestCaseData> PhoneNumberValidationTestCases = new[]
+        {
+            new TestCaseData("+12345678901", true)
+                .SetName("IsPhoneNumberValid_ReturnsTrue_InternationalPlus11"),
+
+            new TestCaseData("12345678901", true)
+                .SetName("IsPhoneNumberValid_ReturnsTrue_NoPlus11"),
+
+            new TestCaseData("+1234567890", true)
+                .SetName("IsPhoneNumberValid_ReturnsTrue_InternationalPlus10"),
+
+            new TestCaseData("5551234567", true)
+                .SetName("IsPhoneNumberValid_ReturnsTrue_NoPlus10"),
+
+            new TestCaseData("+441234567890", true)
+                .SetName("IsPhoneNumberValid_ReturnsTrue_UK"),
+
+            new TestCaseData("+33123456789", true)
+                .SetName("IsPhoneNumberValid_ReturnsTrue_France"),
+
+            new TestCaseData("9876543210", true)
+                .SetName("IsPhoneNumberValid_ReturnsTrue_ValidFormat"),
+
+            new TestCaseData("", false)
+                .SetName("IsPhoneNumberValid_ReturnsFalse_Empty"),
+
+            new TestCaseData("   ", false)
+                .SetName("IsPhoneNumberValid_ReturnsFalse_Whitespace"),
+
+            new TestCaseData("+0123456", false)
+                .SetName("IsPhoneNumberValid_ReturnsFalse_LeadingZero"),
+
+            new TestCaseData("phone123", false)
+                .SetName("IsPhoneNumberValid_ReturnsFalse_Letters"),
+
+            new TestCaseData("+12345", false)
+                .SetName("IsPhoneNumberValid_ReturnsFalse_TooShort"),
+
+            new TestCaseData("123", false)
+                .SetName("IsPhoneNumberValid_ReturnsFalse_VeryShort"),
+
+            new TestCaseData("+", false)
+                .SetName("IsPhoneNumberValid_ReturnsFalse_OnlyPlus"),
+
+            new TestCaseData("123-456-7890", false)
+                .SetName("IsPhoneNumberValid_ReturnsFalse_WithDashes"),
+
+            new TestCaseData("(123) 456-7890", false)
+                .SetName("IsPhoneNumberValid_ReturnsFalse_WithParens"),
+
+            new TestCaseData("abc123def456", false)
+                .SetName("IsPhoneNumberValid_ReturnsFalse_MixedLettersNumbers"),
+
+            new TestCaseData("12345678", true)
+                .SetName("IsPhoneNumberValid_ReturnsTrue_AtMinimumLength"),
+
+            new TestCaseData("123456789012345", true)
+                .SetName("IsPhoneNumberValid_ReturnsTrue_AtMaximumLength"),
+
+            new TestCaseData("1234567", false)
+                .SetName("IsPhoneNumberValid_ReturnsFalse_BelowMinimumLength"),
+
+            new TestCaseData("1234567890123456", false)
+                .SetName("IsPhoneNumberValid_ReturnsFalse_AboveMaximumLength"),
+
+            new TestCaseData("0123456789", false)
+                .SetName("IsPhoneNumberValid_ReturnsFalse_WhenStartingWithZero"),
+        };
+
+
+        [TestCaseSource(nameof(ContactDetailsTestCases))]
+        public void IsContactNullOrDetailMissing_ReturnsCorrectResult(
+            ContactInfo? contact,
+            bool expected)
+        {
+            bool result = Validators.IsContactNullOrDetailMissing(contact!);
+
+            Assert.That(result, Is.EqualTo(expected));
         }
 
-        [Test]
-        public void IsContactNullOrDetailMissing_ReturnsTrue_WhenAnyDetailIsMissing()
+        [TestCaseSource(nameof(ValidContactIdTestCases))]
+        public void IsContactIdValid_ReturnsTrueAndParsesId(
+            string input,
+            int expectedId)
         {
-            var contact = new ContactInfo
-            {
-                FirstName = "John",
-                LastName = "",
-                Email = "john@example.com",
-                PhoneNumber = "+441234567890",
-                Category = "Family"
-            };
-
-            bool result = Validators.IsContactNullOrDetailMissing(contact);
-
-            Assert.That(result, Is.True);
-        }
-
-        [Test]
-        public void IsContactNullOrDetailMissing_ReturnsFalse_WhenAllDetailsArePresent()
-        {
-            var contact = new ContactInfo
-            {
-                FirstName = "Jane",
-                LastName = "Doe",
-                Email = "jane.doe@example.com",
-                PhoneNumber = "+441234567890",
-                Category = "Friends"
-            };
-
-            bool result = Validators.IsContactNullOrDetailMissing(contact);
-
-            Assert.That(result, Is.False);
-        }
-
-        [Test]
-        public void IsContactIdValid_ReturnsTrueAndParsesPositiveId()
-        {
-            bool result = Validators.IsContactIdValid("42", out int idAsInt);
+            bool result = Validators.IsContactIdValid(input, out int id);
 
             Assert.Multiple(() =>
             {
                 Assert.That(result, Is.True);
-                Assert.That(idAsInt, Is.EqualTo(42));
+                Assert.That(id, Is.EqualTo(expectedId));
             });
         }
 
-        [TestCase("0")]
-        [TestCase("-5")]
-        [TestCase("abc")]
-        public void IsContactIdValid_ReturnsFalseForInvalidOrNegativeId(string input)
+        [TestCaseSource(nameof(InvalidContactIdTestCases))]
+        public void IsContactIdValid_ReturnsFalseForInvalidId(string input)
         {
-            bool result = Validators.IsContactIdValid(input, out int id);
+            bool result = Validators.IsContactIdValid(input, out _);
 
             Assert.That(result, Is.False);
         }
 
-        [TestCase("user@example.com", true)]
-        [TestCase("user.name+tag@example.co.uk", true)]
-        [TestCase("", false)]
-        [TestCase("   ", false)]
-        [TestCase("invalid-email", false)]
-        [TestCase("user@localhost", false)]
-        public void IsEmailValid_ReturnsCorrectResult(string email, bool expected)
+        [TestCaseSource(nameof(EmailValidationTestCases))]
+        public void IsEmailValid_ReturnsCorrectResult(
+            string email,
+            bool expected)
         {
-            Assert.That(Validators.IsEmailValid(email), Is.EqualTo(expected));
+            bool result = Validators.IsEmailValid(email);
+
+            Assert.That(result, Is.EqualTo(expected));
         }
 
-        [TestCase("+12345678901", true)]
-        [TestCase("1234567890", true)]
-        [TestCase("", false)]
-        [TestCase("   ", false)]
-        [TestCase("+0123456", false)]
-        [TestCase("phone123", false)]
-        [TestCase("+12345", false)]
-        public void IsPhoneNumberValid_ReturnsCorrectResult(string phoneNumber, bool expected)
+        [TestCaseSource(nameof(PhoneNumberValidationTestCases))]
+        public void IsPhoneNumberValid_ReturnsCorrectResult(
+            string phoneNumber,
+            bool expected)
         {
-            Assert.That(Validators.IsPhoneNumberValid(phoneNumber), Is.EqualTo(expected));
+            bool result = Validators.IsPhoneNumberValid(phoneNumber);
+
+            Assert.That(result, Is.EqualTo(expected));
         }
     }
 }
