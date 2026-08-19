@@ -203,32 +203,28 @@
 
         private static readonly IEnumerable<TestCaseData> EmailBodyValidationTestCases = new[]
         {
-            new TestCaseData("Hello!", false)
-                .SetName("IsEmailBodyValid_ReturnsTrue_ForSimpleBody"),
+            new TestCaseData("Hello!", false),
+            new TestCaseData("This is an email message.", false),
+            new TestCaseData("Hello,\nHow are you?\nRegards", false),
+            new TestCaseData("a", false),
+            new TestCaseData("", true),
+            new TestCaseData("   ", true),
+            new TestCaseData("\t", true),
+            new TestCaseData("\n\r", true),
+            new TestCaseData(null, true),
+        };
 
-            new TestCaseData("This is an email message.", false)
-                .SetName("IsEmailBodyValid_ReturnsTrue_ForSentence"),
-
-            new TestCaseData("Hello,\nHow are you?\nRegards", false)
-                .SetName("IsEmailBodyValid_ReturnsTrue_ForMultilineBody"),
-
-            new TestCaseData("a", false)
-                .SetName("IsEmailBodyValid_ReturnsTrue_ForSingleCharacter"),
-
-            new TestCaseData("", true)
-                .SetName("IsEmailBodyValid_ReturnsFalse_ForEmptyBody"),
-
-            new TestCaseData("   ", true)
-                .SetName("IsEmailBodyValid_ReturnsFalse_ForWhitespaceBody"),
-
-            new TestCaseData("\t", true)
-                .SetName("IsEmailBodyValid_ReturnsFalse_ForTabOnlyBody"),
-
-            new TestCaseData("\n\r", true)
-                .SetName("IsEmailBodyValid_ReturnsFalse_ForNewlineOnlyBody"),
-
-            new TestCaseData(null, true)
-                .SetName("IsEmailBodyValid_ReturnsFalse_ForNullBody")
+        private static readonly IEnumerable<TestCaseData> SMSBodyValidationTestCases = new[]
+        {
+            new TestCaseData(null, true),
+            new TestCaseData("", true),
+            new TestCaseData("   ", true),
+            new TestCaseData("\t", true),
+            new TestCaseData("\n\r", true),
+            new TestCaseData("Hello", false),
+            new TestCaseData("Hello, how are you?", false),
+            new TestCaseData("a", false),
+            new TestCaseData("  Hello  ", false),
         };
 
         private static readonly IEnumerable<TestCaseData> PhoneNumberValidationTestCases = new[]
@@ -345,6 +341,13 @@
         public void IsEmailBodyValid_ReturnsCorrectResult(string body, bool expected)
         {
             bool result = Validators.IsEmailBodyEmpty(body);
+            Assert.That(result, Is.EqualTo(expected));
+        }
+
+        [TestCaseSource(nameof(SMSBodyValidationTestCases))]
+        public void IsSMSBodyEmpty_ReturnsCorrectResult(string? text, bool expected)
+        {
+            bool result = Validators.IsSMSBodyEmpty(text!);
             Assert.That(result, Is.EqualTo(expected));
         }
     }

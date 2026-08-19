@@ -1,0 +1,1 @@
+public record SMS(string text);

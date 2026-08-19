@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 public sealed class EmailService
 {
     private ContactsService _contactsService;

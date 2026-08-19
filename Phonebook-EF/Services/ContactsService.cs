@@ -113,6 +113,22 @@ public sealed class ContactsService
         return contact;
     }
 
+    public async Task<Contact> GetContactByPhoneNumber(string phone)
+    {
+        if (!Validators.IsPhoneNumberValid(phone))
+            throw new Exception("The phone number is not valid");
+
+        var contactList = await GetAllContacts();
+
+        var contact = contactList.FirstOrDefault(
+            c => c.PhoneNumber.Equals(phone));
+
+        if (contact == null)
+            throw new Exception("No contact with that phone number was found.");
+
+        return contact;
+    }
+
     private async Task<Contact?> MapContactInfoToDBModel(ContactInfo info)
     {
         if (Validators.IsContactNullOrDetailMissing(info))

@@ -41,6 +41,7 @@ public static class Formatters
             MainMenuOption.RunContacts => "Contacts",
             MainMenuOption.RunCategories => "Categories",
             MainMenuOption.SendEmail => "Send an email",
+            MainMenuOption.SendSMS => "Send an SMS message",
             MainMenuOption.Exit => "Exit",
             _ => throw new ArgumentOutOfRangeException(nameof(option), option, null)
         };

@@ -18,6 +18,7 @@ class Program
         IContactsView contactsView = new ContactsView();
         ICategoriesView categoriesView = new CategoriesView();
         IEmailView emailView = new EmailView();
+        ISMSView smsView = new SMSView();
 
         IContactRepository contactRepository = new ContactRepository();
         ICategoryRepository categoryRepository = new CategoryRepository();
@@ -25,11 +26,13 @@ class Program
         ContactsService contactsService = new(contactRepository, categoryRepository);
         CategoriesService categoriesService = new(categoryRepository);
         EmailService emailService = new(contactsService);
+        SMSMsgService smsService = new(contactsService);
 
         CategoriesController categoriesController = new(categoriesView, categoriesService);
         ContactsController contactsController = new(contactsView, contactsService, categoriesController);
         EmailController emailController = new(emailView, emailService);
-        AppController app = new(appView, contactsController, categoriesController, emailController);
+        SMSMsgController smsController = new(smsView, smsService);
+        AppController app = new(appView, contactsController, categoriesController, emailController, smsController);
 
         await app.Run();
     }

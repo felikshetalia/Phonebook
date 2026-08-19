@@ -6,16 +6,19 @@ public sealed class AppController
     private readonly ContactsController _contactsController;
     private readonly CategoriesController _categoryController;
     private readonly EmailController _emailController;
+    private readonly SMSMsgController _smsController;
 
     public AppController(IAppView view,
     ContactsController contactsController,
     CategoriesController categoryController,
-    EmailController emailController)
+    EmailController emailController,
+    SMSMsgController smsController)
     {
         _appView = view;
         _contactsController = contactsController;
         _categoryController = categoryController;
         _emailController = emailController;
+        _smsController = smsController;
     }
 
     public async Task Run()
@@ -36,6 +39,9 @@ public sealed class AppController
                     break;
                 case MainMenuOption.SendEmail:
                     await _emailController.Run();
+                    break;
+                case MainMenuOption.SendSMS:
+                    await _smsController.Run();
                     break;
                 case MainMenuOption.Exit:
                     isRunning = false;

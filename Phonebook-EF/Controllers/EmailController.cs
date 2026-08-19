@@ -1,5 +1,3 @@
-using System.Threading.Tasks;
-
 namespace Phonebook_EF;
 
 public sealed class EmailController

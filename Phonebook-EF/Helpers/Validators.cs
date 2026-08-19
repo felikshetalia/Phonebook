@@ -36,4 +36,6 @@ public static class Validators
     public static bool IsEmailBodyEmpty(string body)
         => string.IsNullOrWhiteSpace(body);
 
+    public static bool IsSMSBodyEmpty(string? text)
+        => string.IsNullOrWhiteSpace(text);
 }
